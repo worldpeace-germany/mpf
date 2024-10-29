@@ -301,8 +301,7 @@ class DeviceCollection(dict):
         self.machine.log.warning("Iterating device collections directly is deprecated and will be removed. "
                                  "Access by value(): device_collections[%s] -> device_collections['%s'].values()",
                                  self.name, self.name)
-        for item in self.values():
-            yield item
+        yield from self.values()
 
     def items_tagged(self, tag) -> List["Device"]:
         """Return of list of device objects which have a certain tag.

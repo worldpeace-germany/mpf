@@ -503,6 +503,9 @@ class FASTDriver:
             reconfigured = True
 
         if hold_settings is not None:
+            hold_power = Util.float_to_pwm8_hex_string(hold_settings.power)
+            hold_ms = "00"
+
             if hold_settings.duration > 25500:
                 raise AssertionError("FAST platform does not support hold durations > 25500ms")
             if 25500 >= hold_settings.duration > 255:
@@ -511,8 +514,6 @@ class FASTDriver:
             elif 255 >= hold_settings.duration >= 0:
                 hold_ms = Util.int_to_hex_string(hold_settings.duration)
                 mode = '10'
-
-            hold_power = Util.float_to_pwm8_hex_string(hold_settings.power)
 
         else:
             hold_ms = self.current_driver_config.param3
