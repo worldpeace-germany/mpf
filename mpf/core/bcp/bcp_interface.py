@@ -101,10 +101,10 @@ class BcpInterface(MpfController):
         if not self.machine.bcp.transport.get_transports_for_handler(event):
             self.machine.events.remove_handler_by_event(event=event, handler=self.bcp_trigger)
 
-    async def _bcp_receive_set_machine_var(self, client, name, value):
+    async def _bcp_receive_set_machine_var(self, client, name, value, persist=False):
         """Set machine var via bcp."""
         del client
-        self.machine.variables.set_machine_var(name, value)
+        self.machine.variables.set_machine_var(name, value, persist)
         # document variables injected by MC
         '''machine_var: mc_version
 
@@ -458,8 +458,8 @@ class BcpInterface(MpfController):
             self.machine.register_monitor('machine_vars', self._machine_var_change)
 
         # Send initial machine variable values
-        for s in ("standard", "feature", "game", "coin"):
-            self._send_machine_vars(client, setting_type=s)
+        self._send_machine_vars(client)
+        self._send_machine_settings(client)
 
         # Establish handler for machine variable changes
         self.machine.bcp.transport.add_handler_to_transport("_machine_vars", client)
@@ -471,10 +471,14 @@ class BcpInterface(MpfController):
         if not self.machine.bcp.transport.get_transports_for_handler("_machine_vars"):
             self.machine.machine_var_monitor = False
 
-    def _send_machine_vars(self, client, setting_type=None):
-        self.machine.bcp.transport.send_to_client(
-            client, bcp_command='settings',
-            settings=Util.convert_to_simply_type(self.machine.settings.get_settings(setting_type)))
+    def _send_machine_settings(self, client, setting_type=None):
+        settings = [setting_type] if setting_type else ["standard", "feature", "game", "coin", "hw_volume"]
+        for s in settings:
+            self.machine.bcp.transport.send_to_client(
+                client, bcp_command='settings',
+                settings=Util.convert_to_simply_type(self.machine.settings.get_settings(s)))
+
+    def _send_machine_vars(self, client):
         for var_name, settings in self.machine.variables.machine_vars.items():
             self.machine.bcp.transport.send_to_client(client, bcp_command='machine_variable',
                                                       name=var_name,
