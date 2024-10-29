@@ -23,6 +23,7 @@ pylint:
   disable:
     - pointless-string-statement  # pointless statement, which is how our event docstrings are seen
     - too-few-public-methods
+    - too-many-positional-arguments  # many methods have many positional args
     - unsubscriptable-object    # broken on python 3.9
     # The following linter rules are disabled to make a refactor managable in chunks
     - consider-using-f-string  # temporarily disabling due to the 900+ instances to be replaced
