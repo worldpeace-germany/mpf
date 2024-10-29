@@ -448,9 +448,9 @@ class FastSerialCommunicator(LogMixin):
                 if self.pause_sending_flag.is_set():
                     await self.pause_sending_flag.wait()
 
+            # TODO better way to catch shutting down?
             except SerialException as e:
                 self.log.error(e)
-                return  # TODO better way to catch shutting down?
 
     def write_to_port(self, msg, log_msg=None):
         """Send a message as is, without encoding or adding a <CR> character."""
@@ -464,4 +464,3 @@ class FastSerialCommunicator(LogMixin):
             self.writer.write(msg)
         except AttributeError:
             self.log.warning("Serial connection is not open. Cannot send message: %s", msg)
-            return

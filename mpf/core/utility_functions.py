@@ -185,8 +185,7 @@ class Util:
         """Convert a list of nested lists and/or values into a single one-dimensional list."""
         for item in incoming_list:
             if isinstance(item, IterableCollection) and not isinstance(item, str):
-                for inner_item in Util.flatten_list(item):
-                    yield inner_item
+                yield from Util.flatten_list(item)
             else:
                 yield item
 

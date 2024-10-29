@@ -508,6 +508,7 @@ sort_devices_by_number: single|bool|True
         for board, l in items:
             numbers = l.get_hw_numbers()
             chain_2 = None
+            addr_2 = None
             # Just choose the first one as representative?
             number = numbers[0]
             if "-" in number:
@@ -557,7 +558,7 @@ sort_devices_by_number: single|bool|True
                 items.append(LightChainMap(platform_name, chain_name, chain))
         # do not crash if no lights are configured
         if not items:   # pragma: no cover
-            return
+            return []
 
         items.sort(key=lambda x: x.chain)
         return items
