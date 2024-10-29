@@ -890,7 +890,6 @@ class OppHardwarePlatform(LightsPlatform, SwitchPlatform, DriverPlatform, ServoP
             ]
 
         self.raise_config_error("Unknown subtype {}".format(subtype), 8)
-        return []
 
     def configure_light(self, number, subtype, config, platform_settings):
         """Configure a led or matrix light."""
@@ -949,7 +948,6 @@ class OppHardwarePlatform(LightsPlatform, SwitchPlatform, DriverPlatform, ServoP
             return self.opp_incands[index].configure_software_fade_incand(light_num)
 
         self.raise_config_error("Unknown subtype {}".format(subtype), 12)
-        return None
 
     async def _poll_sender(self, chain_serial):
         """Poll switches."""
@@ -1148,6 +1146,7 @@ class OppHardwarePlatform(LightsPlatform, SwitchPlatform, DriverPlatform, ServoP
         """Generate an OPPServo class with the given number."""
         del config
         chain_serial, _, pin_number = number.split('-')  # Unused value is 'card'
+        possible_inputs = None
 
         if self.min_version[chain_serial] < 0x02020002:
             self.raise_config_error("Servos not supported on this OPP FW version: {}.".format(
@@ -1157,7 +1156,7 @@ class OppHardwarePlatform(LightsPlatform, SwitchPlatform, DriverPlatform, ServoP
             if inputs.chain_serial == chain_serial:
                 possible_inputs = self._get_numbers(inputs.mask)
 
-        if 8 <= int(pin_number) < 16 and int(pin_number) in possible_inputs:
+        if 8 <= int(pin_number) < 16 and possible_inputs and int(pin_number) in possible_inputs:
             servo_number = int(pin_number) - 8
         else:
             self.raise_config_error("Servo unavailable at this number: {}.".format(number), 24)
