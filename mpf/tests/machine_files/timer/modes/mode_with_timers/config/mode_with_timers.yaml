@@ -51,6 +51,11 @@ timers:
         tick_interval: 1s
         start_running: no
         control_events:
+            # Keep this event before the reset event to catch
+            # a regression about the order of timer events
+            - event: jump_timer_up
+              action: jump
+              value: 5
             - event: start_timer_up
               action: start
             - event: reset_timer_up
@@ -59,9 +64,6 @@ timers:
               action: stop
             - event: restart_timer_up
               action: restart
-            - event: jump_timer_up
-              action: jump
-              value: 5
             - event: jump_over_max_timer_up
               action: jump
               value: 20
