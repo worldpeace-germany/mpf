@@ -92,7 +92,7 @@ class Stepper(SystemWideDevice):
             if cfg in config:
                 for pos, value in config[cfg].items():
                     if isinstance(value, str):
-                        config[cfg][pos] = { 'event': value }
+                        config[cfg][pos] = {'event': value}
         config = super().validate_and_parse_config(config, is_mode_config, debug_prefix)
         platform = self.machine.get_platform_sections(
             'stepper_controllers', getattr(config, "platform", None))

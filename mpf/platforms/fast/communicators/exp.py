@@ -110,9 +110,10 @@ class FastExpCommunicator(FastSerialCommunicator):
         self.send_and_forget(f'RF@{board_address}:{Util.int_to_hex_string(rate, True)}')
 
     def register_processor(self, message_prefix, board_address, device_id, callback):
+        """Register an exp board processor to handle messages."""
         if message_prefix not in self.message_processors:
             self.message_processors[message_prefix] = partial(self._process_device_msg, message_prefix)
-            self._device_processors[message_prefix]= dict()
+            self._device_processors[message_prefix] = dict()
         if board_address not in self._device_processors[message_prefix]:
             self._device_processors[message_prefix][board_address] = dict()
         self._device_processors[message_prefix][board_address][device_id] = callback

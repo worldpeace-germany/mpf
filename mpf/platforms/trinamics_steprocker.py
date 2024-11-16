@@ -110,7 +110,7 @@ class TrinamicsTMCLStepper(StepperPlatformInterface):
         microstep_pos = self._uu_to_microsteps(position)
         self.tmcl.mvp(self._mn, "ABS", microstep_pos)
 
-    def move_rel_pos(self, position):
+    def move_rel_pos(self, position, speed=None):
         """Move axis to a relative position."""
         microstep_rel = self._uu_to_microsteps(position)
         self.tmcl.mvp(self._mn, "REL", microstep_rel)

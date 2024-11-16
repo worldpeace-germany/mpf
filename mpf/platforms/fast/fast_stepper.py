@@ -10,6 +10,7 @@ POLL_MS = 100
 MIN_SPEED = 350
 MAX_SPEED = 1650
 
+
 class FastStepper(StepperPlatformInterface):
 
     """A stepper in the FAST platform connected to a FAST Expansion Board."""
@@ -31,6 +32,7 @@ class FastStepper(StepperPlatformInterface):
         self._default_speed = Util.int_to_hex_string(self.config['default_speed'], True)
 
     def home(self, direction):
+        """Return the stepper to its home position."""
         if direction != 'counterclockwise':
             raise ConfigFileError("FAST Stepper only supports home in counter-clockwise direction. "
                                   "Please rewire your motor and set homing_direction: counterclockwise "
@@ -39,6 +41,7 @@ class FastStepper(StepperPlatformInterface):
         self._send_command("MH")
 
     async def wait_for_move_completed(self):
+        """Wait for the stepper to stop moving."""
         # If not moving, return immediately
         if not self._is_moving:
             return
@@ -73,7 +76,8 @@ class FastStepper(StepperPlatformInterface):
     def move_vel_mode(self, velocity):
         """Move the motor indefinitely in either direction.
 
-        FAST does not support this, so instead send the longest possible move time."""
+        FAST does not support this, so instead send the longest possible move time.
+        """
         base_command = "MR" if velocity < 0 else "MF"
         # The only place in MPF code that uses move_vel_mode is the software-based
         # homing, which sends 1/-1 as values. Interpret that as slowest possible
@@ -88,9 +92,10 @@ class FastStepper(StepperPlatformInterface):
         self._send_command("MC")
 
     def set_home_position(self):
+        """Not used."""
         pass
 
-    def _send_command(self, base_command, payload=[]):
+    def _send_command(self, base_command, payload=set()):
         self.exp_connection.send_and_forget(','.join([
             f'{base_command}@{self.base_address}:{self.stepper_index}', *payload]))
 

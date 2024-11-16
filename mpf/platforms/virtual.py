@@ -512,7 +512,7 @@ class VirtualStepper(StepperPlatformInterface):
         """Wait until move completed."""
         await asyncio.sleep(0.1)
 
-    def move_rel_pos(self, position):
+    def move_rel_pos(self, position, speed=None):
         """Move axis to a relative position."""
         self._current_position += position
 

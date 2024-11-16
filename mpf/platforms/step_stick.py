@@ -35,7 +35,7 @@ class DigitalOutputStepStickStepper(StepperPlatformInterface):
         if self.enable_output:
             self.enable_output.enable()
 
-    def move_rel_pos(self, position):
+    def move_rel_pos(self, position, speed=None):
         """Move a number of steps in one direction."""
         if self._move_task and not self._move_task.done():
             raise AssertionError("Last move has not been completed. Calls stop first.")
