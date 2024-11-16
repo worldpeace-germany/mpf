@@ -351,8 +351,11 @@ class TextUi(MpfController):
         self._machine_widgets.append(Label("MACHINE VARIABLES"))
         self._machine_widgets.append(Divider())
         machine_vars = self.machine.variables.machine_vars
-        # If config defines explict vars to show, only show those. Otherwise, all
-        names = self.config.get('machine_vars', machine_vars.keys())
+        # If config defines explict vars to show, only show those.
+        # Otherwise, filter out the unhelpful defaults
+        names = self.config.get('machine_vars', [n for n in machine_vars.keys() if not (
+            n.startswith("audits") or n.startswith("platform") or n.startswith("mpf"))
+        ])
         for name in names:
             self._machine_widgets.append(Label("{}: {}".format(name, machine_vars[name]['value'])))
         self._layout_change = True

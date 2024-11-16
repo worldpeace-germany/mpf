@@ -271,6 +271,7 @@ class HighScore(AsyncMode):
             input_initials = choice(unused_initials)
         return input_initials
 
+    # pylint: disable-msg=too-many-arguments
     async def _show_award_slide(self, player_num, player_name: str, category_name: str, award: str, value: int) -> None:
         if not self.high_score_config['award_slide_display_time']:
             return
