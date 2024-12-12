@@ -160,12 +160,13 @@ class LogMixin:
         if error_no:
             error_slug = "Log-{}-{}".format(self.log.name if self.log else "", error_no)
             error_url = log_url.format(error_slug)
-        if error_no and context:
-            return "{} Context: {} Log Code: {} ({})".format(msg, context, error_slug, error_url)
+
+            if context:
+                return "{} Context: {} Log Code: {} ({})".format(msg, context, error_slug, error_url)
+            return "{} Log Code: {} ({})".format(msg, error_slug, error_url)
+
         if context:
             return "{} Context: {} ".format(msg, context)
-        if error_no:
-            return "{} Log Code: {} ({})".format(msg, error_slug, error_url)
 
         return msg
 

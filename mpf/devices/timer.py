@@ -144,8 +144,8 @@ class Timer(ModeDevice):
     def _setup_control_events(self, event_list):
         self.debug_log("Setting up control events")
 
-        kwargs = {}
         for entry in event_list:
+            kwargs = {}
             if entry['action'] in ('add', 'subtract', 'jump', 'pause', 'set_tick_interval'):
                 handler = getattr(self, entry['action'])
                 kwargs = {'timer_value': entry['value']}

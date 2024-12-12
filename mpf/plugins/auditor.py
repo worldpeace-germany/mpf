@@ -78,7 +78,7 @@ class Auditor(MpfPlugin):
 
         self.switchnames_to_audit = {
             # Don't audit tagged switches, or credit switches during free play
-            x.name for x in self.machine.switches.values() if \
+            x.name for x in self.machine.switches.values() if
             ('no_audit' not in x.tags) and ('no_audit_free' not in x.tags or not is_free_play)
         }
 
