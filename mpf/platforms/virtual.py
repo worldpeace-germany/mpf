@@ -60,9 +60,13 @@ class VirtualHardwarePlatform(AccelerometerPlatform, I2cPlatform, ServoPlatform,
 
     async def initialize(self) -> None:
         """Initialize platform."""
+        self.machine.events.add_handler("virtual_platform_remove_ball_from_device", self.remove_ball_from_device)
+        self.machine.events.add_handler("virtual_platform_add_ball_to_device", self.add_ball_to_device)
 
     def stop(self):
         """Stop platform."""
+        self.machine.events.remove_handler(self.remove_ball_from_device)
+        self.machine.events.remove_handler(self.add_ball_to_device)
 
     async def configure_servo(self, number: str, config: dict):
         """Configure a servo device in platform."""
@@ -137,6 +141,33 @@ class VirtualHardwarePlatform(AccelerometerPlatform, I2cPlatform, ServoPlatform,
                 continue
             platforms.append(Util.string_to_class(platform))
         return platforms
+
+    def _set_ball_device_switch_state(self, ball_device, ball_position, switch_state):
+        assert(self.machine.ball_devices.get(ball_device), f"Unknown ball device '{ball_device}")
+        bd = self.machine.ball_devices[ball_device]
+        switches = [s for s in Util.string_to_list(bd.config['ball_switches']) if s != bd.config.get('jam_switch')]
+        # If an explicit switch is designated, deactivate that one.
+        if ball_position >= 0:
+            switch = switches[ball_position]
+        # Otherwise get the last active switch
+        else:
+            switches = [s for s in switches if self.machine.switches[s].state != switch_state]
+            # If none are active, do nothing
+            if not switches:
+                return
+            switch = switches[-1]
+        self.machine.switch_controller.process_switch(switch, switch_state)
+        return switch
+
+    def remove_ball_from_device(self, ball_device, ball_position=-1, **kwargs):
+        """Remove a ball from a device by deactivating a switch."""
+        del kwargs
+        self._set_ball_device_switch_state(ball_device, ball_position, 0)
+
+    def add_ball_to_device(self, ball_device, ball_position=-1, **kwargs):
+        """Add a ball from a device by activating a switch."""
+        del kwargs
+        self._set_ball_device_switch_state(ball_device, ball_position, 1)
 
     def validate_stepper_section(self, stepper, config):
         """Validate stepper sections."""
