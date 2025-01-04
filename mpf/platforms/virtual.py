@@ -149,13 +149,18 @@ class VirtualHardwarePlatform(AccelerometerPlatform, I2cPlatform, ServoPlatform,
         # If an explicit switch is designated, deactivate that one.
         if ball_position >= 0:
             switch = switches[ball_position]
-        # Otherwise get the last active switch
+        # Otherwise get the next switch to change state
         else:
             switches = [s for s in switches if self.machine.switches[s].state != switch_state]
             # If none are active, do nothing
             if not switches:
                 return
-            switch = switches[-1]
+            # For removing a ball, choose the LAST switch
+            if not switch_state:
+                switch = switches[-1]
+            # For adding a ball, choose the EARLIEST switch
+            else:
+                switch = switches[0]
         self.machine.switch_controller.process_switch(switch, switch_state)
         return switch
 
