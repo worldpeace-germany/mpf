@@ -16,7 +16,7 @@ class FastServo(ServoPlatformInterface):
         self.exp_connection = breakout_board.communicator
 
         self.base_address = breakout_board.address
-        self.servo_index = Util.int_to_hex_string(int(port) - 1)  # Servos are 0-indexed
+        self.servo_index = f"{(int(port) - 1):X}"  # Servos are 0-indexed hex
         self.max_runtime = f"{config['max_runtime']:02X}"
 
         self.write_config_to_servo()
