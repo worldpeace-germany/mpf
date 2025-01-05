@@ -60,11 +60,13 @@ class VirtualHardwarePlatform(AccelerometerPlatform, I2cPlatform, ServoPlatform,
 
     async def initialize(self) -> None:
         """Initialize platform."""
+        self.machine.events.add_handler("virtual_platform_set_switch", self.set_switch)
         self.machine.events.add_handler("virtual_platform_remove_ball_from_device", self.remove_ball_from_device)
         self.machine.events.add_handler("virtual_platform_add_ball_to_device", self.add_ball_to_device)
 
     def stop(self):
         """Stop platform."""
+        self.machine.events.remove_handler(self.set_switch)
         self.machine.events.remove_handler(self.remove_ball_from_device)
         self.machine.events.remove_handler(self.add_ball_to_device)
 
@@ -163,6 +165,14 @@ class VirtualHardwarePlatform(AccelerometerPlatform, I2cPlatform, ServoPlatform,
                 switch = switches[0]
         self.machine.switch_controller.process_switch(switch, switch_state)
         return switch
+
+    def set_switch(self, switch, state=-1, **kwargs):
+        """Simulate a switch state change, either to an explicit state or toggle."""
+        del kwargs
+        s = self.machine.switches[switch]
+        if state == -1:
+            state = s.state ^1
+        self.machine.switch_controller.process_switch_obj(s, state, True)
 
     def remove_ball_from_device(self, ball_device, ball_position=-1, **kwargs):
         """Remove a ball from a device by deactivating a switch."""
