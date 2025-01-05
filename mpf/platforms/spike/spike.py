@@ -420,10 +420,10 @@ class SpikeStepper(StepperPlatformInterface):
             return False
         return info['position'] == self._position
 
-    def move_rel_pos(self, position):
+    def move_rel_pos(self, position, speed=None):
         """Move relative to current position."""
         self._position += int(position)
-        self._move_to_absolute_position(self._position, self.config['speed'])
+        self._move_to_absolute_position(self._position, speed or self.config['speed'])
 
     def move_vel_mode(self, velocity):
         """Move stepper in a direction."""

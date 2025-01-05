@@ -487,7 +487,7 @@ class PdLedStepper(StepperPlatformInterface):
         else:
             self.move_rel_pos(-16384)
 
-    def move_rel_pos(self, position):
+    def move_rel_pos(self, position, speed=None):
         """Move stepper by x steps."""
         if abs(position) > 16384:
             raise ValueError("Cannot move more than 16384 steps but tried {}".format(position))

@@ -189,7 +189,7 @@ class PololuTICStepper(StepperPlatformInterface):
         self._move_complete.clear()
         self.tic.rotate_to_position(self._position)
 
-    def move_rel_pos(self, position):
+    def move_rel_pos(self, position, speed=None):
         """Move axis to a relative position."""
         self._position += position
         self._move_complete.clear()
