@@ -93,9 +93,10 @@ class FastStepper(StepperPlatformInterface):
 
     def set_home_position(self):
         """Not used."""
-        pass
 
-    def _send_command(self, base_command, payload=set()):
+    def _send_command(self, base_command, payload=None):
+        if not payload:
+            payload = []
         self.exp_connection.send_and_forget(','.join([
             f'{base_command}@{self.base_address}:{self.stepper_index}', *payload]))
 
