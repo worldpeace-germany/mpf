@@ -1,6 +1,5 @@
 """Fast servo implementation."""
 
-from mpf.core.utility_functions import Util
 from mpf.platforms.interfaces.servo_platform_interface import ServoPlatformInterface
 
 
